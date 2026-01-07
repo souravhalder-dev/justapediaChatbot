@@ -46,6 +46,7 @@ const Chatbot = () => {
         }
       }
     } catch (error) {
+      console.error('Search error:', error);
       setMessages(prev => [...prev, { text: "Sorry, I encountered an error while searching.", sender: 'bot' }]);
     } finally {
       setLoading(false);
