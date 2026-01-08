@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 const WIKI_API_URL = 'https://justapedia.org/api.php';
-const BACKEND_URL =
-  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_URL) ||
-  'http://127.0.0.1:5000/summarize';
+const BACKEND_URL = '/api/summarize';
 
 export const searchArticles = async (query) => {
   try {
