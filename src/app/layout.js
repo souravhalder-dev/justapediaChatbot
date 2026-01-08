@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Justapedia Chatbot',
+  title: 'Justapedia Article Summaries',
   description: 'AI-powered summaries for Justapedia articles',
 };
 

@@ -19,7 +19,7 @@ import {
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     { 
-      text: "Hello! I'm the Justapedia AI. Ask me about anything.", 
+      text: "Search Justapedia article name and read summary", 
       sender: 'bot',
       id: 'init' 
     }
@@ -141,7 +141,7 @@ const Chatbot = () => {
         <div className="p-3 flex-1 overflow-y-auto">
           <button 
             onClick={() => {
-              setMessages([{ text: "Hello! I'm the Justapedia AI. Ask me about anything.", sender: 'bot', id: 'init' }]);
+              setMessages([{ text: "Search Justapedia article name and read summary", sender: 'bot', id: 'init' }]);
               setSidebarOpen(false);
             }}
             className={`
@@ -164,7 +164,7 @@ const Chatbot = () => {
                 : 'text-gray-800 bg-gray-200'}
             `}>
               <MessageSquare size={16} className="shrink-0" />
-              <span className="truncate">Justapedia AI Chat</span>
+              <span className="truncate">Justapedia Article Summaries</span>
             </button>
           </div>
         </div>
@@ -210,10 +210,10 @@ const Chatbot = () => {
           >
             <Menu size={24} />
           </button>
-          <div className="flex-1 text-center font-medium">Justapedia AI</div>
+          <div className="flex-1 text-center font-medium">Justapedia Article Summaries</div>
           <button 
             onClick={() => {
-              setMessages([{ text: "Hello! I'm the Justapedia AI. Ask me about anything.", sender: 'bot', id: 'init' }]);
+              setMessages([{ text: "Search Justapedia article name and read summary", sender: 'bot', id: 'init' }]);
             }}
             className="p-2"
           >
@@ -228,7 +228,7 @@ const Chatbot = () => {
               <div className={`p-4 rounded-full mb-6 ${darkMode ? 'bg-white/10' : 'bg-gray-100'}`}>
                 <Sparkles size={40} />
               </div>
-              <h2 className="text-2xl font-semibold mb-2">Justapedia AI</h2>
+              <h2 className="text-2xl font-semibold mb-2">Justapedia Article Summaries</h2>
             </div>
           ) : (
             <div className="flex flex-col pb-32">
@@ -255,7 +255,7 @@ const Chatbot = () => {
                       </div>
                     </div>
                     <div className="relative flex-1 overflow-hidden break-words">
-                      {msg.sender === 'bot' && <div className="font-semibold mb-1 opacity-90">Justapedia AI</div>}
+                      {msg.sender === 'bot' && <div className="font-semibold mb-1 opacity-90">Justapedia Article Summaries</div>}
                       {msg.summary ? (
                         <div className="prose prose-invert max-w-none">
                           <p className={`whitespace-pre-wrap leading-7 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>{msg.summary}</p>
@@ -366,7 +366,7 @@ const Chatbot = () => {
               </button>
             </div>
             <div className="text-center text-xs text-gray-500 mt-2">
-              Free Research Preview. Justapedia AI may produce inaccurate information about people, places, or facts. Developed by Sourav. Contact: <a href="mailto:skhsouravhalder@gmail.com" className="underline hover:text-gray-300 transition-colors">skhsouravhalder@gmail.com</a>
+              Free Research Preview. Justapedia Article Summaries may produce inaccurate information about people, places, or facts. Developed by Sourav. Contact: <a href="mailto:skhsouravhalder@gmail.com" className="underline hover:text-gray-300 transition-colors">skhsouravhalder@gmail.com</a>
             </div>
           </div>
         </div>

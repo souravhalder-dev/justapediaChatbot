@@ -167,7 +167,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 const Chatbot = ()=>{
     const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([
         {
-            text: "Hello! I'm the Justapedia AI. Ask me about anything.",
+            text: "Search Justapedia article name and read summary",
             sender: 'bot',
             id: 'init'
         }
@@ -313,7 +313,7 @@ const Chatbot = ()=>{
                                 onClick: ()=>{
                                     setMessages([
                                         {
-                                            text: "Hello! I'm the Justapedia AI. Ask me about anything.",
+                                            text: "Search Justapedia article name and read summary",
                                             sender: 'bot',
                                             id: 'init'
                                         }
@@ -366,7 +366,7 @@ const Chatbot = ()=>{
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "truncate",
-                                                children: "Justapedia AI Chat"
+                                                children: "Justapedia Article Summaries"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Chatbot.jsx",
                                                 lineNumber: 167,
@@ -495,7 +495,7 @@ const Chatbot = ()=>{
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex-1 text-center font-medium",
-                                children: "Justapedia AI"
+                                children: "Justapedia Article Summaries"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Chatbot.jsx",
                                 lineNumber: 213,
@@ -505,7 +505,7 @@ const Chatbot = ()=>{
                                 onClick: ()=>{
                                     setMessages([
                                         {
-                                            text: "Hello! I'm the Justapedia AI. Ask me about anything.",
+                                            text: "Search Justapedia article name and read summary",
                                             sender: 'bot',
                                             id: 'init'
                                         }
@@ -551,7 +551,7 @@ const Chatbot = ()=>{
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                     className: "text-2xl font-semibold mb-2",
-                                    children: "Justapedia AI"
+                                    children: "Justapedia Article Summaries"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Chatbot.jsx",
                                     lineNumber: 231,
@@ -611,7 +611,7 @@ const Chatbot = ()=>{
                                                     children: [
                                                         msg.sender === 'bot' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "font-semibold mb-1 opacity-90",
-                                                            children: "Justapedia AI"
+                                                            children: "Justapedia Article Summaries"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Chatbot.jsx",
                                                             lineNumber: 258,
@@ -858,7 +858,7 @@ const Chatbot = ()=>{
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "text-center text-xs text-gray-500 mt-2",
                                     children: [
-                                        "Free Research Preview. Justapedia AI may produce inaccurate information about people, places, or facts. Developed by Sourav. Contact: ",
+                                        "Free Research Preview. Justapedia Article Summaries may produce inaccurate information about people, places, or facts. Developed by Sourav. Contact: ",
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                                             href: "mailto:skhsouravhalder@gmail.com",
                                             className: "underline hover:text-gray-300 transition-colors",
@@ -866,7 +866,7 @@ const Chatbot = ()=>{
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Chatbot.jsx",
                                             lineNumber: 369,
-                                            columnNumber: 149
+                                            columnNumber: 164
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
