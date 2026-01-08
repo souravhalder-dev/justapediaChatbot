@@ -1,80 +1,10 @@
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 
-// Basic list of English stopwords
-const STOP_WORDS = new Set([
-  'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at',
-  'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by',
-  'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further',
-  'had', 'has', 'have', 'having', 'he', 'he\'d', 'he\'ll', 'he\'s', 'her', 'here', 'here\'s', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'how\'s',
-  'i', 'i\'d', 'i\'ll', 'i\'m', 'i\'ve', 'if', 'in', 'into', 'is', 'it', 'it\'s', 'its', 'itself',
-  'let\'s', 'me', 'more', 'most', 'my', 'myself', 'nor', 'of', 'on', 'once', 'only', 'or', 'other', 'ought', 'our', 'ours', 'ourselves', 'out', 'over', 'own',
-  'same', 'she', 'she\'d', 'she\'ll', 'she\'s', 'should', 'so', 'some', 'such',
-  'than', 'that', 'that\'s', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'there\'s', 'these', 'they', 'they\'d', 'they\'ll', 'they\'re', 'they\'ve', 'this', 'those', 'through', 'to', 'too',
-  'under', 'until', 'up', 'very',
-  'was', 'we', 'we\'d', 'we\'ll', 'we\'re', 'we\'ve', 'were', 'what', 'what\'s', 'when', 'when\'s', 'where', 'where\'s', 'which', 'while', 'who', 'who\'s', 'whom', 'why', 'why\'s', 'with', 'would',
-  'you', 'you\'d', 'you\'ll', 'you\'re', 'you\'ve', 'your', 'yours', 'yourself', 'yourselves'
-]);
-
+// Helper to split text into sentences (simple version)
 function getSentences(text) {
-  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
-  const segments = segmenter.segment(text);
-  return Array.from(segments).map(s => s.segment.trim()).filter(s => s.length > 0);
-}
-
-function summarizeText(text, sentencesCount = 6) {
-  const sentences = getSentences(text);
-  if (sentences.length <= sentencesCount) {
-    return text;
-  }
-
-  // Calculate word frequencies
-  const wordFrequencies = {};
-  const words = text.toLowerCase().match(/\b\w+\b/g) || [];
-  
-  words.forEach(word => {
-    if (!STOP_WORDS.has(word) && word.length > 2) {
-      wordFrequencies[word] = (wordFrequencies[word] || 0) + 1;
-    }
-  });
-
-  const maxFreq = Math.max(...Object.values(wordFrequencies), 1);
-  
-  // Normalize frequencies
-  for (const word in wordFrequencies) {
-    wordFrequencies[word] = wordFrequencies[word] / maxFreq;
-  }
-
-  // Score sentences
-  const sentenceScores = sentences.map((sentence, index) => {
-    const sentenceWords = sentence.toLowerCase().match(/\b\w+\b/g) || [];
-    let score = 0;
-    sentenceWords.forEach(word => {
-      if (wordFrequencies[word]) {
-        score += wordFrequencies[word];
-      }
-    });
-    // Boost early sentences slightly as they often contain key info
-    if (index < 3) score *= 1.2;
-    return { sentence, score, index };
-  });
-
-  // Sort by score and take top N
-  const topSentences = sentenceScores
-    .sort((a, b) => b.score - a.score)
-    .slice(0, sentencesCount)
-    // Sort back by original index to maintain flow
-    .sort((a, b) => a.index - b.index)
-    .map(item => item.sentence);
-
-  // Post-processing cleanup
-  const cleanedSummary = topSentences.filter(sent => {
-    const lower = sent.toLowerCase();
-    if (lower.startsWith("for other uses") || lower.includes("disambiguation")) return false;
-    return true;
-  }).map(sent => sent.replace("[edit | edit source]", ""));
-
-  return cleanedSummary.join(" ");
+  // Split by periods, but avoid common abbreviations (Mr., Dr., etc. - simplistic check)
+  return text.match(/[^.!?]+[.!?]+/g) || [text];
 }
 
 export async function GET(request) {
@@ -110,37 +40,115 @@ export async function GET(request) {
     const rawHtml = data.parse.text["*"];
     const $ = cheerio.load(rawHtml);
 
-    // Remove unwanted elements
+    // 1. Clean up the DOM
     const unwantedSelectors = [
-      "script", "style", "table", "sup", 
-      "div.reflist", "div.navbox", "div.infobox", "div.metadata",
+      "script", "style", "link", "meta",
+      "table", "div.infobox", "div.navbox", "div.metadata", "div.reflist",
       "div.hatnote", "div.dablink", "div.relarticle", "div.tright", "div.tleft", "div.thumb",
-      "span.mw-editsection", "div#toc", "div.toc", "h2", "h3", "h4", "h5", "h6"
+      "span.mw-editsection", "sup.reference", "div#toc", "div.toc", ".mw-empty-elt"
     ];
     
     unwantedSelectors.forEach(selector => $(selector).remove());
 
-    let text = $.text();
+    // 2. Sophisticated Extraction Logic
+    let structuredContent = [];
+    const root = $('.mw-parser-output').length ? $('.mw-parser-output') : $('body');
+    
+    let currentSection = {
+      title: "Introduction",
+      points: []
+    };
+    
+    // Process elements sequentially
+    root.children().each((i, el) => {
+      const $el = $(el);
+      
+      // Handle Headings (New Sections)
+      if ($el.is('h2')) {
+        // Save previous section if it has content
+        if (currentSection.points.length > 0) {
+          structuredContent.push(currentSection);
+        }
+        
+        // Start new section
+        let sectionTitle = $el.text().trim();
+        // Stop if we hit footer sections
+        if (/^(See also|References|External links|Bibliography|Notes|Further reading)/i.test(sectionTitle)) {
+          currentSection = null; // Stop processing
+          return false; // Break the loop
+        }
+        
+        currentSection = {
+          title: sectionTitle,
+          points: []
+        };
+      }
+      
+      // Handle Paragraphs (Content)
+      if (currentSection && $el.is('p')) {
+        let text = $el.text()
+          .replace(/\[\d+\]/g, '') // Remove citations [1]
+          .replace(/\[citation needed\]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+          
+        if (text.length > 30 && !text.startsWith("Coordinates:")) {
+          // Intelligent Sentence Selection
+          const sentences = getSentences(text);
+          
+          // For Introduction, take more detail (first 3 sentences of each paragraph)
+          // For other sections, take the Topic Sentence (first sentence) + maybe one more if long
+          const limit = currentSection.title === "Introduction" ? 3 : 1;
+          
+          sentences.slice(0, limit).forEach(sent => {
+            const cleanSent = sent.trim();
+            if (cleanSent.length > 15) { // Filter distinct noise
+               currentSection.points.push(cleanSent);
+            }
+          });
+        }
+      }
+      
+      // Handle Lists (ul) - treat list items as points directly
+      if (currentSection && $el.is('ul')) {
+         $el.find('li').slice(0, 3).each((j, li) => { // Limit to top 3 list items per list to avoid spam
+            let liText = $(li).text().replace(/\[\d+\]/g, '').trim();
+            if (liText.length > 10) {
+              currentSection.points.push(liText);
+            }
+         });
+      }
+    });
+    
+    // Push the last section
+    if (currentSection && currentSection.points.length > 0) {
+      structuredContent.push(currentSection);
+    }
 
-    // Clean up whitespace and filter lines
-    const lines = text.split('\n')
-      .map(line => line.trim())
-      .filter(line => {
-        if (!line) return false;
-        if (line.startsWith("For other uses") || line.includes("redirects here") || line.startsWith("See also")) return false;
-        // Skip common section headers if they remain
-        if (/^(Contents|See also|References|External links|Bibliography|Further reading)\b/i.test(line)) return false;
-        // Skip numeric TOC artifacts
-        if (/^\d+(\s+\w+.*)?$/.test(line)) return false;
-        return true;
+    // 3. Format Output
+    // Limit total length to avoid overwhelming the user (e.g., top 8 sections)
+    const limitedSections = structuredContent.slice(0, 8);
+    
+    let formattedSummary = "";
+    
+    limitedSections.forEach(section => {
+      if (section.points.length === 0) return;
+      
+      // Uppercase title for emphasis
+      formattedSummary += `${section.title.toUpperCase()}\n`;
+      
+      // Add bullets
+      section.points.forEach(point => {
+        formattedSummary += `• ${point}\n`;
       });
+      
+      formattedSummary += "\n"; // Spacing between sections
+    });
 
-    const cleanText = lines.join('\n');
-    const summaryText = summarizeText(cleanText);
-    const articleUrl = `https://justapedia.org/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`;
+    const articleUrl = `https://justapedia.org/wiki/${encodeURIComponent(data.parse.title.replace(/ /g, '_'))}`;
 
     return NextResponse.json({
-      summary: summaryText,
+      summary: formattedSummary.trim(),
       title: data.parse.title,
       url: articleUrl
     });
